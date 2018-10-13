@@ -16,9 +16,9 @@ const buildOutput = obj => {
     let out = {}
     let idVid = idAud = idTex = idMen = idOth = 0
 
+    out.file = obj['$'].ref
     for (let i in obj.track) {
       if (obj.track[i]['$']['type'] === 'General') {
-        out.file = obj.track[i]['Complete_name'][0]
         out.general = {}
         for (let f in obj.track[i]) {
           if (f !== '$') out.general[f.toLowerCase()] = obj.track[i][f]
@@ -66,14 +66,16 @@ const buildOutput = obj => {
 const buildJson = (xml) => new Promise((resolve, reject) => {
   xml2js.parseString(xml, (err, obj) => {
     if (err) return reject(err)
-    if (!obj['Mediainfo']) return reject('Something went wrong')
-    obj = obj['Mediainfo']
+    if (!obj['MediaInfo']) return reject('Something went wrong')
+    obj = obj['MediaInfo']
 
     let out = []
-    if (Array.isArray(obj.File)) {
-      for (let i in obj.File) out.push(buildOutput(obj.File[i]))
+    if (Array.isArray(obj.media)) {
+      for (let i in obj.media) {
+        out.push(buildOutput(obj.media[i]))
+      }
     } else {
-      out.push(buildOutput(obj.File))
+      out.push(buildOutput(obj.media))
     }
     resolve(out)
   })
@@ -82,6 +84,7 @@ const buildJson = (xml) => new Promise((resolve, reject) => {
 const safeLocalPath = path => process.platform.match('win32') ? `"${path}"` : `'${path.replace(/'/g, `'"'"'`)}'`
 
 module.exports = (...args) => {
+  args = (args[0] instanceof Array) ? args[0] : args
   const execChild = (cmd, options) => new Promise((resolve, reject) => {
     let child = exec(cmd, options, (error, stdout, stderr) => {
       if (error !== null || stderr !== '') {
@@ -104,8 +107,8 @@ module.exports = (...args) => {
   cmd.push(getCmd()) // base command
   cmd.push('--Output=XML --Full') // args
 
-  for (let idx = 0; idx < Array.prototype.slice.apply(args).length; idx++) {
-    const val = Array.prototype.slice.apply(args)[idx]
+  for (let idx = 0; idx < args.length; idx++) {
+    const val = args[idx]
     let files = glob.sync(val, { cwd: (cmd_options.cwd || process.cwd()), nonull: true })
     for (let i in files) { cmd.push(safeLocalPath(files[i])) }
   }

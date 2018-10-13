@@ -1,11 +1,11 @@
 {
-  "name": "mediainfo-wrapper",
-  "version": "1.2.1",
+  "name": "warp-mediainfo",
+  "version": "1.3.0",
   "description": "wrapper for mediainfo-prebuilt",
   "main": "index.js",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/touno-io/mediainfo-wrapper/issues"
+    "url": "https://github.com/touno-io/warp-mediainfo/issues"
   },
   "dependencies": {
     "xml2js": "^0.4.16",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/touno-io/mediainfo-wrapper.git"
+    "url": "https://github.com/touno-io/warp-mediainfo.git"
   },
   "keywords": [
     "mediainfo",

@@ -6,7 +6,14 @@ This product uses [MediaInfo](http://mediaarea.net/MediaInfo) library, Copyright
 
 _Warning: contains 24MiB of binaries for osx, linux, windows. You can delete the platforms you don't need_
 
+### Using child_process power
+
+You can pass an object as first argument to use exec options. See [Node child_process](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback).
+
 ### Changelog
+- v1.4.0
+    - normalize data json.
+
 - v1.3.0
     - fixed bug mediainfo process lock.
     - fixed bug peak hdd reading
@@ -14,26 +21,32 @@ _Warning: contains 24MiB of binaries for osx, linux, windows. You can delete the
 
 ### Usage
 
-    npm install @touno-io/mediainfo
+    npm i @touno-io/mediainfo
 
 then:
 
 ```js
-var mi = require('@touno-io/mediainfo');
-mi('foo/bar.mkv', 'foo/bar2.avi').then(function(data) {
-  for (var i in data) {
-    console.log('%s parsed', data[i].file);
-    console.log('MediaInfo data:', data[i]);
+const mediainfo = require('@touno-io/mediainfo')
+mediainfo([ 'foo/bar.mkv' ]).then((data) => {
+  for (let i in data) {
+    console.log('%s parsed', data[i].file)
+    console.log('MediaInfo data:', data[i])
   }
-}).catch(function (e){console.error(e)});
+}).catch(function (e){
+  console.error(e)
+})
 ```
 
-### Using child_process power
-
-You can pass an object as first argument to use exec options. See [Node child_process](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback).
-
 ```js
-require('@touno-io/mediainfo')({maxBuffer: 'infinity'}, 'foo/bar.mkv', 'foo/bar2.avi').then...
+const mediainfo = require('@touno-io/mediainfo')
+mediainfo({ maxBuffer: 'infinity' }, [ 'foo/bar.mkv' ]).then((data) => {
+  for (let i in data) {
+    console.log('%s parsed', data[i].file)
+    console.log('MediaInfo data:', data[i])
+  }
+}).catch(function (e){
+  console.error(e)
+})
 ```
 
 ### Glob
@@ -41,7 +54,15 @@ require('@touno-io/mediainfo')({maxBuffer: 'infinity'}, 'foo/bar.mkv', 'foo/bar2
 You can use glob to match files:
 
 ```js
-require('@touno-io/mediainfo')('foo/bar.mkv', 'foo2/*', 'foo3/*.ogg').then...
+const mediainfo = require('@touno-io/mediainfo')
+mediainfo([ 'foo2/*mp3', 'foo3/*.ogg' ]).then((data) => {
+  for (let i in data) {
+    console.log('%s parsed', data[i].file)
+    console.log('MediaInfo data:', data[i])
+  }
+}).catch(function (e){
+  console.error(e)
+})
 ```
 
 ### Cleaning unneccesary binaries
@@ -49,25 +70,26 @@ require('@touno-io/mediainfo')('foo/bar.mkv', 'foo2/*', 'foo3/*.ogg').then...
 You can clean unneeded binaries, with gulp and nwjs for example:
 
 ```js
-var del = require('del');
-var path = require('path');
-var pkJson = require('./package.json');
+var del = require('del')
+var path = require('path')
+var pkJson = require('./package.json')
 
 // clean @touno-io/mediainfo
 gulp.task('clean:mediainfo', () => {
     return Promise.all(['linux32','linux64'].map((platform) => {
-        console.log('clean:mediainfo', platform);
-        const sources = path.join(releasesDir, pkJson.name, platform);
+        console.log('clean:mediainfo', platform)
+        const sources = path.join(releasesDir, pkJson.name, platform)
         return del([
             path.join(sources, 'node_modules/@touno-io/mediainfo/lib/*'),
             path.join(sources, pkJson.name + '.app/Contents/Resources/app.nw/node_modules/@touno-io/mediainfo/lib/*'),
             '!'+path.join(sources, 'node_modules/@touno-io/mediainfo/lib/'+platform),
             '!'+path.join(sources, pkJson.name + '.app/Contents/Resources/app.nw/node_modules/@touno-io/mediainfo/lib/'+platform)
-        ]);
-    }));
-});
+        ])
+    }))
+})
 ```
 Or you can use bash script to do this, e.g to clean all binaries except OSX 64 you can run this from your project root:
+
 ```bash
 find ./node_modules/@touno-io/mediainfo/lib/* -maxdepth 1 -type d -not -name "osx64" | xargs rm -rf
 ```

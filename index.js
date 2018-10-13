@@ -1,10 +1,10 @@
-var path = require('path'),
+let path = require('path'),
     xml2js = require('xml2js'),
     glob = require('glob'),
     exec = require('child_process').exec;
 
 function getCmd() {
-    var arch = process.arch.match(/64/) ? '64' : '32';
+    let arch = process.arch.match(/64/) ? '64' : '32';
 
     switch (process.platform) {
         case 'darwin':
@@ -19,48 +19,48 @@ function getCmd() {
 }
 
 function buildOutput(obj) {
-    var out = {};
-    var idVid = idAud = idTex = idMen = idOth = 0;
+    let out = {};
+    let idVid = idAud = idTex = idMen = idOth = 0;
 
-    for (var i in obj.track) {
+    for (let i in obj.track) {
         if (obj.track[i]['$']['type'] === 'General') {
             out.file = obj.track[i]['Complete_name'][0];
             out.general = {};
-            for (var f in obj.track[i]) {
+            for (let f in obj.track[i]) {
                 if (f !== '$') out.general[f.toLowerCase()] = obj.track[i][f];
             }
         } else if (obj.track[i]['$']['type'] === 'Video') {
             if (!idVid) out.video = [];
             out.video[idVid] = {};
-            for (var f in obj.track[i]) {
+            for (let f in obj.track[i]) {
                 if (f !== '$') out.video[idVid][f.toLowerCase()] = obj.track[i][f];
             }
             idVid++;
         } else if (obj.track[i]['$']['type'] === 'Audio') {
             if (!idAud) out.audio = [];
             out.audio[idAud] = {};
-            for (var f in obj.track[i]) {
+            for (let f in obj.track[i]) {
                 if (f !== '$') out.audio[idAud][f.toLowerCase()] = obj.track[i][f];
             }
             idAud++;
         } else if (obj.track[i]['$']['type'] === 'Text') {
             if (!idTex) out.text = [];
             out.text[idTex] = {};
-            for (var f in obj.track[i]) {
+            for (let f in obj.track[i]) {
                 if (f !== '$') out.text[idTex][f.toLowerCase()] = obj.track[i][f];
             }
             idTex++;
         } else if (obj.track[i]['$']['type'] === 'Menu') {
             if (!idMen) out.menu = [];
             out.menu[idMen] = {};
-            for (var f in obj.track[i]) {
+            for (let f in obj.track[i]) {
                 if (f !== '$') out.menu[idMen][f.toLowerCase()] = obj.track[i][f];
             }
             idMen++;
         } else {
             if (!idOth) out.other = [];
             out.other[idOth] = {};
-            for (var f in obj.track[i]) {
+            for (let f in obj.track[i]) {
                 if (f !== '$') out.other[idOth][f.toLowerCase()] = obj.track[i][f];
             }
             idOth++;
@@ -77,10 +77,10 @@ function buildJson(xml) {
 
             obj = obj['Mediainfo'];
 
-            var out = [];
+            let out = [];
 
             if (Array.isArray(obj.File)) {
-                for (var i in obj.File) {
+                for (let i in obj.File) {
                     out.push(buildOutput(obj.File[i]));
                 }
             } else {
@@ -103,23 +103,29 @@ function safeLocalPath(path) {
 }
 
 module.exports = function MediaInfo() {
-    var args = [].slice.call(arguments);
-    var cmd_options = typeof args[0] === "object" ? args.shift() : {};
-    var cmd = [];
+    let args = [].slice.call(arguments);
+    let cmd_options = typeof args[0] === "object" ? args.shift() : {};
+    let cmd = [];
 
     cmd.push(getCmd()); // base command
     cmd.push('--Output=XML --Full'); // args
-    Array.prototype.slice.apply(args).forEach(function (val, idx) {
-        var files = glob.sync(val, {cwd: (cmd_options.cwd || process.cwd()), nonull: true});
-        for (var i in files) {
-            cmd.push(safeLocalPath(files[i])); // files
-        }
-    });
 
+    for (let idx = 0; idx < Array.prototype.slice.apply(args).length; idx++) {
+        const val = Array.prototype.slice.apply(args)[i];
+        let files = glob.sync(val, {cwd: (cmd_options.cwd || process.cwd()), nonull: true});
+        for (let i in files) { cmd.push(safeLocalPath(files[i])); }
+    }
+    
     return new Promise(function (resolve, reject) {
-        exec(cmd.join(' '), cmd_options, function (error, stdout, stderr) {
+        let child = exec(cmd.join(' '), cmd_options, function (error, stdout, stderr) {
             if (error !== null || stderr !== '') return reject(error || stderr);
-            buildJson(stdout).then(resolve).catch(reject);
+            buildJson(stdout).then(() => {
+                child.kill()
+                resolve()
+            }).catch(() => {
+                child.kill()
+                reject()
+            });
         });
     });
 };

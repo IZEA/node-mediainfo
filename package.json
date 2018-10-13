@@ -1,6 +1,6 @@
 {
     "name": "mediainfo-wrapper",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "wrapper for mediainfo-prebuilt",
     "main": "index.js",
     "license": "MIT",
@@ -22,7 +22,7 @@
         "codecs"
     ],
     "author": {
-        "name": "Jean van Kasteel",
-        "email": "vankasteelj@gmail.com"
+        "name": "Kananek Thongkam",
+        "email": "info@touno.io"
     }
 }

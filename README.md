@@ -1,4 +1,4 @@
-# mediainfo-wrapper
+# @touno-io/mediainfo
 
 node wrapper for mediainfo.
 
@@ -6,14 +6,20 @@ This product uses [MediaInfo](http://mediaarea.net/MediaInfo) library, Copyright
 
 _Warning: contains 24MiB of binaries for osx, linux, windows. You can delete the platforms you don't need_
 
+### Changelog
+- v1.3.0
+    - fixed bug mediainfo process lock.
+    - fixed bug peak hdd reading
+    - update mediainfo version.
+
 ### Usage
 
-    npm install mediainfo-wrapper
+    npm install @touno-io/mediainfo
 
 then:
 
 ```js
-var mi = require('mediainfo-wrapper');
+var mi = require('@touno-io/mediainfo');
 mi('foo/bar.mkv', 'foo/bar2.avi').then(function(data) {
   for (var i in data) {
     console.log('%s parsed', data[i].file);
@@ -27,7 +33,7 @@ mi('foo/bar.mkv', 'foo/bar2.avi').then(function(data) {
 You can pass an object as first argument to use exec options. See [Node child_process](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback).
 
 ```js
-require('mediainfo-wrapper')({maxBuffer: 'infinity'}, 'foo/bar.mkv', 'foo/bar2.avi').then...
+require('@touno-io/mediainfo')({maxBuffer: 'infinity'}, 'foo/bar.mkv', 'foo/bar2.avi').then...
 ```
 
 ### Glob
@@ -35,7 +41,7 @@ require('mediainfo-wrapper')({maxBuffer: 'infinity'}, 'foo/bar.mkv', 'foo/bar2.a
 You can use glob to match files:
 
 ```js
-require('mediainfo-wrapper')('foo/bar.mkv', 'foo2/*', 'foo3/*.ogg').then...
+require('@touno-io/mediainfo')('foo/bar.mkv', 'foo2/*', 'foo3/*.ogg').then...
 ```
 
 ### Cleaning unneccesary binaries
@@ -47,21 +53,21 @@ var del = require('del');
 var path = require('path');
 var pkJson = require('./package.json');
 
-// clean mediainfo-wrapper
+// clean @touno-io/mediainfo
 gulp.task('clean:mediainfo', () => {
     return Promise.all(['linux32','linux64'].map((platform) => {
         console.log('clean:mediainfo', platform);
         const sources = path.join(releasesDir, pkJson.name, platform);
         return del([
-            path.join(sources, 'node_modules/mediainfo-wrapper/lib/*'),
-            path.join(sources, pkJson.name + '.app/Contents/Resources/app.nw/node_modules/mediainfo-wrapper/lib/*'),
-            '!'+path.join(sources, 'node_modules/mediainfo-wrapper/lib/'+platform),
-            '!'+path.join(sources, pkJson.name + '.app/Contents/Resources/app.nw/node_modules/mediainfo-wrapper/lib/'+platform)
+            path.join(sources, 'node_modules/@touno-io/mediainfo/lib/*'),
+            path.join(sources, pkJson.name + '.app/Contents/Resources/app.nw/node_modules/@touno-io/mediainfo/lib/*'),
+            '!'+path.join(sources, 'node_modules/@touno-io/mediainfo/lib/'+platform),
+            '!'+path.join(sources, pkJson.name + '.app/Contents/Resources/app.nw/node_modules/@touno-io/mediainfo/lib/'+platform)
         ]);
     }));
 });
 ```
 Or you can use bash script to do this, e.g to clean all binaries except OSX 64 you can run this from your project root:
 ```bash
-find ./node_modules/mediainfo-wrapper/lib/* -maxdepth 1 -type d -not -name "osx64" | xargs rm -rf
+find ./node_modules/@touno-io/mediainfo/lib/* -maxdepth 1 -type d -not -name "osx64" | xargs rm -rf
 ```

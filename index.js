@@ -94,7 +94,7 @@ const safeLocalPath = path => process.platform.match('win32') ? `"${path}"` : `'
 module.exports = (...args) => {
   const execChild = (cmd, options) => new Promise((resolve, reject) => {
     let child = exec(cmd, options, (error, stdout, stderr) => {
-      if (error !== null || stderr !== '') {
+      if (!stdout) {
         child.kill()
         return reject(error || stderr)
       }
@@ -114,7 +114,6 @@ module.exports = (...args) => {
 
   cmd.push(getCmd()) // base command
   cmd.push('--Output=XML --Full') // args
-
   for (let idx = 0; idx < args.length; idx++) {
     const val = args[idx]
     let files = glob.sync(val, { cwd: (cmd_options.cmd || process.cwd()), nonull: true })

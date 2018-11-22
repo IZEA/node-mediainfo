@@ -1,7 +1,7 @@
 {
   "name": "@touno-io/mediainfo",
-  "version": "1.4.1",
-  "description": "wrapper for mediainfo-prebuilt",
+  "version": "1.4.3",
+  "description": "wrapper for mediainfo-prebuilt by touno.io",
   "private": false,
   "main": "index.js",
   "license": "MIT",

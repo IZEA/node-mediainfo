@@ -1,17 +1,19 @@
-# @touno-io/mediainfo
-
 node wrapper for mediainfo.
 
 This product uses [MediaInfo](http://mediaarea.net/MediaInfo) library, Copyright (c) 2002-2014 [MediaArea.net SARL](mailto:Info@MediaArea.net)
 
 _Warning: contains 24MiB of binaries for osx, linux, windows. You can delete the platforms you don't need_
 
+
 ### Using child_process power
 
 You can pass an object as first argument to use exec options. See [Node child_process](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback).
 
 ### Changelog
-- v1.4.1
+- v1.4.3
+    - Update README and patch version.
+
+- v1.4.2
     - fixed file read bug.
 
 - v1.4.0

@@ -4,3 +4,5 @@ test
 npm-debug.log
 *.DS_Store
 *.swp
+/lib/*.txt
+/lib/*.html

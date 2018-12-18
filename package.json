@@ -1,6 +1,6 @@
 {
   "name": "@touno-io/mediainfo",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "wrapper for mediainfo-prebuilt by touno.io",
   "private": false,
   "main": "index.js",

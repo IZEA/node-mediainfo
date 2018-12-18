@@ -27,7 +27,7 @@
     "index.js",
     "LICENSE",
     "README.MD",
-    "สริ/**/*"
+    "lib/**/*"
   ],
   "author": "Kananek Thongkam <info@touno.io>",
   "homepage": "https://github.com/touno-io/mediainfo#readme",

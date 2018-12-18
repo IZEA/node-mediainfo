@@ -10,7 +10,7 @@ _Warning: contains 24MiB of binaries for osx, linux, windows. You can delete the
 You can pass an object as first argument to use exec options. See [Node child_process](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback).
 
 ### Changelog
-- v1.4.3
+- v1.4.5
     - Update README and patch version.
 
 - v1.4.2
